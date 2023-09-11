@@ -148,10 +148,14 @@ public class Main {
         for(int i=0;i<31;i++)System.out.print("\u2500");
         System.out.print(esd);
         gotoXY(65, 20);
-        System.out.print("«\tRegistrar Cliente\t»");
+        System.out.print("«\t1)Registrar Cliente\t»");
         gotoXY(65, 22);
-        System.out.print("«\tMostrar Cliente\t»");
+        System.out.print("«\t2)Mostrar Cliente\t»");
         gotoXY(65, 24);
+        System.out.print("«\t3)Salir del Programa\t»");
+        
+        
+        gotoXY(65, 26);
         System.out.print(eii);
         for(int i=0;i<31;i++)System.out.print("\u2500");
         System.out.print(eid);
@@ -168,6 +172,7 @@ public class Main {
     }
 
     public static void Registrar_cliente(){
+        System.out.print("\033[38;5;83m");
         String nombre;
         String ApellidoP;
         String ApellidoM;
@@ -316,11 +321,24 @@ public class Main {
                     break;
                 case 3:
                     borrar();
-                    scaner.next();
-                    break;
-                case 4:
-                    borrar();
-                    scaner.next();
+                    System.out.print("\033[38;5;222m");
+                    //System.out.print("\033[48;5;24m");
+                    gotoXY(10, 10);
+                    System.out.println(" _______  ______   ___   _______  _______ ");
+                    gotoXY(10, 11);
+                    System.out.println("|   _   ||      | |   | |       ||       |");
+                    gotoXY(10, 12);
+                    System.out.println("|  |_|  ||  _    ||   | |   _   ||  _____|");
+                    gotoXY(10, 13);
+                    System.out.println("|       || | |   ||   | |  | |  || |_____ ");
+                    gotoXY(10, 14);
+                    System.out.println("|       || |_|   ||   | |  |_|  ||_____  |");
+                    gotoXY(10, 15);
+                    System.out.println("|   _   ||       ||   | |       | _____| |");
+                    gotoXY(10, 15);
+                    System.out.println("|__| |__||______| |___| |_______||_______|");
+                    scaner.nextLine();
+                    scaner.nextLine();
                     break;
                 default:
                 //borrar();
@@ -328,7 +346,7 @@ public class Main {
                 //scaner.nextLine();
                 break;
             }
-        }while(opc!=4); 
+        }while(opc!=3); 
 
     }
 
