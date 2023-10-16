@@ -59,7 +59,7 @@ public class Habitacion {
     public static void registrar_habitacion(Scanner scanner) {
         System.out.println("Ingrese el ID de la habitación:");
         int id_Habitacion = scanner.nextInt();
-        scanner.nextLine();  // Consume newline left-over
+        scanner.nextLine(); 
 
 
         establecer_tipo_habitacion(scanner);
