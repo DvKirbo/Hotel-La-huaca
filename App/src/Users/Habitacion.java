@@ -88,6 +88,10 @@ public class Habitacion {
     
     
     public static void cambiarEstadoHabitacion(Scanner scanner) {
+        System.out.println("Ingrese el ID de la habitación a cambiar:");
+        int id = scanner.nextInt();
+        scanner.nextLine();  
+    
         System.out.println("Ingrese el nuevo estado de la habitación:");
         System.out.println(" 1: Ocupada \n 2: Disponible");
             String nuevoEstado = "";
@@ -103,13 +107,6 @@ public class Habitacion {
                     cambiarEstadoHabitacion(scanner);
                 break;
             }
-        
-
-        System.out.println("Ingrese el ID de la habitación a cambiar:");
-        int id = scanner.nextInt();
-        scanner.nextLine();  
-    
-        
     
         for (Habitacion habitacion : habitaciones) {
             if (habitacion.getId_Habitacion() == id) {
