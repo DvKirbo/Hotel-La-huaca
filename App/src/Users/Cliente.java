@@ -1,5 +1,6 @@
 package Users;
 
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -24,131 +25,259 @@ public class Cliente {
 
     private static List<Cliente> clientes = new ArrayList<>();
 
-    public static void registrar_cliente(Scanner scanner){
+    private static Connection establecerConexion() {
+        try {
+            Class.forName("org.postgresql.Driver");
+            String url = "jdbc:postgresql://dpg-cl3f35iuuipc738c8ejg-a.oregon-postgres.render.com:5432/hoteldb_5c25";
+            String usuario = "root";
+            String contraseña = "aZUmvnskO4TeHmb2sGdSoDOQjqtQUVkN";
+            return DriverManager.getConnection(url, usuario, contraseña);
+        } catch (ClassNotFoundException | SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public static void registrar_cliente(Scanner scanner) {
         System.out.println("Ingrese el ID del Cliente");
         int id_cliente = scanner.nextInt();
         scanner.nextLine();
-
+    
         System.out.println("Ingrese el nombre del Cliente");
-        String nombre  = scanner.next();
+        String nombre = scanner.next();
         scanner.nextLine();
-
+    
         System.out.println("Ingrese el apellido del Cliente");
         String apellido = scanner.next();
         scanner.nextLine();
-
+    
         System.out.println("Ingrese el Documento de Identidad del Cliente");
         int doc_identidad = scanner.nextInt();
         scanner.nextLine();
-
+    
         System.out.println("Ingrese el Numero Telefonico del Cliente");
         int numero_Telefono = scanner.nextInt();
         scanner.nextLine();
-
-        Cliente nuevoClientes = new Cliente(id_cliente, nombre, apellido, doc_identidad, numero_Telefono);
-        clientes.add(nuevoClientes);
-    }
-
-    public static void  modificar_nombre(Scanner scanner){
-        System.out.println("Ingrese el nuevo nombre");
-        String nuevoNombre = scanner.next();
-        Cliente.nombre = nuevoNombre;
-    }
-
-    public static void  modificar_apellido(Scanner scanner){
-        System.out.println("Ingrese el nuevo apellido");
-        String nuevoApellido = scanner.next();
-        Cliente.apellido = nuevoApellido;
-    }
     
-    public static void modificar_doc_identidad(Scanner scanner){
-        System.out.println("Ingrese el nuevo Documento de Identidad");
-        int nuevoDoc_identidad = scanner.nextInt();
-        Cliente.doc_identidad = nuevoDoc_identidad;
-    }
-
-    public static void modificar_numero_Telefono(Scanner scanner){
-        System.out.println("Ingrese el nuevo Numero de Telefono");
-        int nuevoNumero_Telefono = scanner.nextInt();
-        Cliente.numero_Telefono = nuevoNumero_Telefono;
-
-    }
-
-    public static void menu_modificar(Scanner scanner){
-        System.out.println("1: Nombre \n 2: Apellido \n 3: Documento identidad \n 4: Numero Telefonico");
-        int tipo = scanner.nextInt();
-        scanner.nextLine();
-        switch (tipo) {
-            case 1:
-                modificar_nombre(scanner);
-                break;
-            case 2:
-                modificar_apellido(scanner);
-            break;
-            case 3:
-                modificar_doc_identidad(scanner);
-            break;
-            case 4:
-                modificar_numero_Telefono(scanner);
-            break;
-            default:
-                System.out.println("Opcion Invalida");
-                menu_modificar(scanner);
-            break;
+        try (Connection conexion = establecerConexion();
+             PreparedStatement preparedStatement = conexion.prepareStatement(
+                     "INSERT INTO clientes (id_cliente, nombre, apellido, doc_identidad, numero_Telefono) " +
+                             "VALUES (?, ?, ?, ?, ?)")) {
+    
+            preparedStatement.setInt(1, id_cliente);
+            preparedStatement.setString(2, nombre);
+            preparedStatement.setString(3, apellido);
+            preparedStatement.setInt(4, doc_identidad);
+            preparedStatement.setInt(5, numero_Telefono);
+    
+            preparedStatement.executeUpdate();
+    
+            System.out.println("Cliente registrado correctamente.");
+    
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
-    private int getid_cliente(){
-        return id_cliente;
-    }
-    public static void modificar_cliente(Scanner scanner){
+
+    public static void modificar_cliente(Scanner scanner) {
         System.out.println("Ingrese el ID del cliente a actualizar:");
         int id = scanner.nextInt();
         scanner.nextLine();
-        for(Cliente cliente: clientes){
-            if(cliente.getid_cliente() == id){
-                menu_modificar(scanner);
-                break;
-            }
-        }            
-    }
-    
 
-    public static void eliminarCliente(int id){
-        clientes.removeIf(cliente -> cliente.getid_cliente() == id);
-    }
-
-    public static void eliminar_cliente(Scanner scanner){
-        System.out.println("Ingrese el ID a eliminar:");
-        int id = scanner.nextInt();
+        System.out.println("Seleccione qué desea modificar:");
+        System.out.println("1: Nombre\n2: Apellido\n3: Documento Identidad\n4: Numero Telefono");
+        int opcion = scanner.nextInt();
         scanner.nextLine();
-        for(Cliente cliente:clientes){
-            if(cliente.getid_cliente() == id){
-                Cliente.eliminarCliente(id);
-            }
-            else{
-                System.out.println("Id no encontrada");
-                eliminar_cliente(scanner);
-            }
+
+        switch (opcion) {
+            case 1:
+                modificar_nombre(id, scanner);
+                break;
+            case 2:
+                modificar_apellido(id, scanner);
+                break;
+            case 3:
+                modificar_doc_identidad(id, scanner);
+                break;
+            case 4:
+                modificar_numero_Telefono(id, scanner);
+                break;
+            default:
+                System.out.println("Opción inválida");
         }
     }
 
-    public static void listar_clientes(){
-        for(Cliente cliente:clientes){
-            System.out.println("ID del cliente: " + cliente.id_cliente);
-            System.out.println("Nombre del cliente: " + Cliente.nombre);
-            System.out.println("Apellido del cliente: " + Cliente.apellido);
-            System.out.println("Documento de Identidad del cliente: " + Cliente.doc_identidad);
-            System.out.println("Numero de Telefono del cliente: " + Cliente.numero_Telefono);
-            System.out.println("-----------------------");
+    private static void modificar_nombre(int id, Scanner scanner) {
+        System.out.println("Ingrese el nuevo nombre");
+        String nuevoNombre = scanner.nextLine();
+
+        try (Connection conexion = establecerConexion();
+             PreparedStatement preparedStatement = conexion.prepareStatement(
+                     "UPDATE clientes SET nombre = ? WHERE id_cliente = ?")) {
+
+            preparedStatement.setString(1, nuevoNombre);
+            preparedStatement.setInt(2, id);
+
+            int filasAfectadas = preparedStatement.executeUpdate();
+
+            if (filasAfectadas > 0) {
+                System.out.println("Nombre del cliente actualizado correctamente");
+            } else {
+                System.out.println("No se encontró un cliente con el ID proporcionado");
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    
+
+    private static void modificar_apellido(int id, Scanner scanner){
+        System.out.println("Ingrese el nuevo apellido");
+        String nuevoApellido = scanner.nextLine();
+
+        try (Connection conexion = establecerConexion();
+            PreparedStatement preparedStatement = conexion.prepareStatement(
+                "UPDATE clientes SET apellido = ? WHERE id_cliente = ?")){
+            preparedStatement.setString(1, nuevoApellido);
+            preparedStatement.setInt(2,id);
+
+            int filasAfectadas = preparedStatement.executeUpdate();
+
+            if (filasAfectadas > 0 ) {
+                System.out.println("Apellido del cliente actualizado correctamente");
+            }
+            else{
+                System.out.println("No se encontro un cliente con el ID proporcionado");
+            }
+            } catch (SQLException e){
+                e.printStackTrace();
+            }
+    }
+
+    private static void modificar_doc_identidad(int id, Scanner scanner){
+         System.out.println("Ingrese el nuevo documento de identidad");
+        Integer nuevoDoc_identidad = scanner.nextInt();
+
+        try (Connection conexion = establecerConexion();
+            PreparedStatement preparedStatement = conexion.prepareStatement(
+                "UPDATE clientes SET apellido = ? WHERE id_cliente = ?")){
+            preparedStatement.setInt(1, nuevoDoc_identidad);
+            preparedStatement.setInt(2,id);
+
+            int filasAfectadas = preparedStatement.executeUpdate();
+
+            if (filasAfectadas > 0 ) {
+                System.out.println("Documento del cliente actualizado correctamente");
+            }
+            else{
+                System.out.println("No se encontro un cliente con el ID proporcionado");
+            }
+            } catch (SQLException e){
+                e.printStackTrace();
+            }
+    }
+
+    private static void modificar_numero_Telefono(int id, Scanner scanner){
+         System.out.println("Ingrese el nuevo documento de identidad");
+        Integer nuevoTelefono = scanner.nextInt();
+
+        try (Connection conexion = establecerConexion();
+            PreparedStatement preparedStatement = conexion.prepareStatement(
+                "UPDATE clientes SET apellido = ? WHERE id_cliente = ?")){
+            preparedStatement.setInt(1, nuevoTelefono);
+            preparedStatement.setInt(2,id);
+
+            int filasAfectadas = preparedStatement.executeUpdate();
+
+            if (filasAfectadas > 0 ) {
+                System.out.println("Numero del cliente actualizado correctamente");
+            }
+            else{
+                System.out.println("No se encontro un cliente con el ID proporcionado");
+            }
+            } catch (SQLException e){
+                e.printStackTrace();
+            }
+    }
+
+    public static void listar_clientes() {
+        try (Connection conexion = establecerConexion();
+             Statement statement = conexion.createStatement();
+             ResultSet resultSet = statement.executeQuery("SELECT * FROM clientes")) {
+
+            if (!resultSet.isBeforeFirst()) {
+                System.out.println("No hay clientes registrados.");
+            } else {
+                System.out.println("Lista de clientes:");
+                while (resultSet.next()) {
+                    System.out.println("ID del cliente: " + resultSet.getInt("id_cliente"));
+                    System.out.println("Nombre del cliente: " + resultSet.getString("nombre"));
+                    System.out.println("Apellido del cliente: " + resultSet.getString("apellido"));
+                    System.out.println("Documento de Identidad del cliente: " + resultSet.getInt("doc_identidad"));
+                    System.out.println("Numero de Telefono del cliente: " + resultSet.getInt("numero_Telefono"));
+                    System.out.println("-----------------------");
+                }
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void eliminar_cliente(Scanner scanner) {
+        System.out.println("Ingrese el ID a eliminar:");
+        int id = scanner.nextInt();
+        scanner.nextLine();
+    
+        try (Connection conexion = establecerConexion();
+             PreparedStatement preparedStatement = conexion.prepareStatement(
+                     "DELETE FROM clientes WHERE id_cliente = ?")) {
+    
+            preparedStatement.setInt(1, id);
+    
+            int filasAfectadas = preparedStatement.executeUpdate();
+    
+            if (filasAfectadas > 0) {
+                System.out.println("Cliente eliminado correctamente.");
+            } else {
+                System.out.println("No se encontró un cliente con el ID proporcionado.");
+            }
+    
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void menu(Scanner scanner){     
+        System.out.println(" 1. Registrar Cliente \n 2. Leer Cliente \n 3. Modificar Cliente \n 4. Eliminar Cliente");
+        int eleccion = scanner.nextInt();
+        switch (eleccion) {
+            case 1:
+                Cliente.registrar_cliente(scanner);
+                break;
+            case 2:
+                Cliente.listar_clientes();
+                break;
+            case 3:
+                Cliente.modificar_cliente(scanner);
+                break;
+            case 4:
+                Cliente.eliminar_cliente(scanner);
+                break;
+            default:
+                System.out.println("");
+                menu(scanner);
+                break;
         }
     }
 
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
-        Cliente.registrar_cliente(scanner);
-        Cliente.modificar_cliente(scanner);
-        Cliente.eliminar_cliente(scanner);
-        Cliente.listar_clientes();
+        menu(scanner);
+
+        
+        
 
     }
 
