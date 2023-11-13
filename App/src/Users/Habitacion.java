@@ -220,6 +220,7 @@ public class Habitacion {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         cargarHabitacionesDesdeDB();
+        
         menu(scanner);
         
 
