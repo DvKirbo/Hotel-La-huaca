@@ -144,11 +144,26 @@ public class Cliente {
     }
 
     public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
-        Cliente.registrar_cliente(scanner);
-        Cliente.modificar_cliente(scanner);
-        Cliente.eliminar_cliente(scanner);
-        Cliente.listar_clientes();
+        Scanner scanner = new Scanner(System.in);       
+        System.out.println(" 1. Registrar Cliente \n 2. Leer Cliente \n 3. Modificar Cliente \n 4. Eliminar Cliente");
+        int eleccion = scanner.nextInt();
+        switch (eleccion) {
+            case 1:
+                Cliente.registrar_cliente(scanner);
+                break;
+            case 2:
+                Cliente.listar_clientes();
+                break;
+            case 3:
+                Cliente.modificar_cliente(scanner);
+                break;
+            case 4:
+                Cliente.eliminar_cliente(scanner);
+                break;
+        }
+
+        
+        
 
     }
 
