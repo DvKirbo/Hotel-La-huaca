@@ -1,4 +1,5 @@
-class Servicio {
+public class Servicio {
+    
     String nombre;
     double precio;
 
