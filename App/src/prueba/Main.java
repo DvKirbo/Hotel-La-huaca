@@ -9,7 +9,7 @@ import java.util.Scanner;
 
 import javax.swing.JFrame;
 
-import Users.Clientes;
+import Users.Cliente;
 
 public class Main {
     static String errorOpc="";
@@ -22,7 +22,7 @@ public class Main {
         static String eii ="\u2514";
         static String lado = "│";
         static String base = "\u2500";
-        static ArrayList <Clientes> cliente = new ArrayList<Clientes>();
+        static ArrayList <Cliente> cliente = new ArrayList<Cliente>();
 
 
     public static void gotoXY(int x, int y){
@@ -246,7 +246,7 @@ public class Main {
         gotoXY(75,21);
         System.out.print("»");
         Dni = scaner.next();
-        cliente.add(new Clientes(nombre, ApellidoP, ApellidoM, Genero, numero, Dni));
+        cliente.add(new Cliente(nombre, ApellidoP, ApellidoM, Genero, numero, Dni));
     }
 
 
@@ -268,7 +268,7 @@ public class Main {
 
         gotoXY(1, 2);
         for(int i=0;i<160;i++)System.out.print("-");
-        for(Clientes cli : cliente){
+        for(Cliente cli : cliente){
 
         gotoXY(1, 4+cont);
         System.out.print(cli.getNombre());
@@ -306,7 +306,7 @@ public class Main {
                             System.out.println(continuar);
                         }while(continuar!='n'||continuar!='n');
                         borrar();
-                        for(Clientes cli : cliente){
+                        for(Cliente cli : cliente){
                             System.out.println(cli.toString());
                             System.out.println();
                         }

@@ -125,7 +125,7 @@ public class Habitacion {
         habitaciones.removeIf(habitacion -> habitacion.getId_Habitacion() == id);
     }
 
-    public static void eliminacionHabitacion(Scanner scanner){
+    public static void eliminar_habitacion(Scanner scanner){
         System.out.println("Ingrese el ID de la habitación a eliminar:");
         int id = scanner.nextInt();
         scanner.nextLine();
@@ -135,7 +135,7 @@ public class Habitacion {
             }
             else{
                 System.out.println("Id no encontrada");
-                eliminacionHabitacion(scanner);
+                eliminar_habitacion(scanner);
             }
         }
     }   
@@ -144,7 +144,7 @@ public class Habitacion {
         Scanner scanner = new Scanner(System.in);
         Habitacion.registrar_habitacion(scanner);
         Habitacion.cambiarEstadoHabitacion(scanner);
-        Habitacion.eliminacionHabitacion(scanner);
+        Habitacion.eliminar_habitacion(scanner);
         
 
     }
