@@ -105,20 +105,26 @@ public class DB {
             }
         }
 
-        public static void listarHabitacion() throws SQLException{
+        public static void listarHabitacion() throws SQLException {
             Connection conn = DriverManager.getConnection(url, user, password);
             java.sql.Statement stmt = conn.createStatement();
-            ResultSet rs =stmt.executeQuery("SELECT * FROM public.habitaciones;");
-            System.out.println("Habitaciones:");
-            while (rs.next()){
+            ResultSet rs = stmt.executeQuery("SELECT * FROM public.habitaciones;");
+            
+            System.out.println("---------------------------------------------------------------");
+            System.out.println("| ID\t| Tipo\t\t| Estado\t| Precio por Día\t|");
+            System.out.println("---------------------------------------------------------------");
+            
+            while (rs.next()) {
                 int id = rs.getInt("id_Habitacion");
                 String tipo = rs.getString("tipo_habitacion");
                 boolean estado_habitacion = rs.getBoolean("estado_habitacion");
                 double precio_Dia = rs.getDouble("precio_dia");
-                System.out.println(id+"\t"+tipo+"\t"+estado_habitacion+"\t"+precio_Dia);
+                
+                System.out.printf("| %d\t| %-10s\t| %-6s\t| %.2f\t\t|\n", id, tipo, estado_habitacion, precio_Dia);
             }
+            
+            System.out.println("---------------------------------------------------------------");
         }
-
 
         public static void main(String[] args) throws Exception {
             try{
