@@ -126,7 +126,6 @@ public class DB {
             System.out.println("---------------------------------------------------------------");
         }
 
-
         public static void main(String[] args) throws Exception {
             try{
                 guardarCliente(3, "wasa", "wasa", 0, 0, 0);
