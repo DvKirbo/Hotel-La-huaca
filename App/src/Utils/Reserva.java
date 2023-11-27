@@ -1,4 +1,4 @@
-package Users;
+package Utils;
 
 public class Reserva {
     private int id_reserva;
