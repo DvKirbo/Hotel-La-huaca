@@ -4,6 +4,7 @@ import java.beans.Statement;
 import java.net.ConnectException;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -125,8 +126,45 @@ public class DB {
             
             System.out.println("---------------------------------------------------------------");
         }
+         public static void checkout(int idReserva) throws SQLException{
+        try (Connection conn = DriverManager.getConnection(url, user, password)) {
+            String findReservaQuery = "SELECT * FROM public.reserva WHERE idReserva = ?";
+            String updateHabitacionQuery = "UPDATE public.habitaciones SET estado_habitacion = true WHERE id_Habitacion = ?";
+            String deleteClienteQuery = "DELETE FROM public.clientes WHERE idCliente = ?";
+            String updateFechaSalidaQuery = "UPDATE public.reserva SET fechaSalida = ? WHERE idReserva = ?";
 
-
+            java.sql.Date fechaActual = new java.sql.Date(new Date().getTime());
+            
+            try (PreparedStatement findReservaStmt = conn.prepareStatement(findReservaQuery)) {
+                findReservaStmt.setInt(1, idReserva);
+                try (java.sql.ResultSet rs = findReservaStmt.executeQuery()) {
+                    if (rs.next()) {
+                        int idHabitacion = rs.getInt("idHabitacion");
+                        int idCliente = rs.getInt("idCliente");
+                        try (PreparedStatement updateHabitacionStmt = conn.prepareStatement(updateHabitacionQuery)) {
+                            updateHabitacionStmt.setInt(1, idHabitacion);
+                            updateHabitacionStmt.executeUpdate();
+                        }
+                        try (PreparedStatement deleteClienteStmt = conn.prepareStatement(deleteClienteQuery)) {
+                            deleteClienteStmt.setInt(1, idCliente);
+                            deleteClienteStmt.executeUpdate();
+                        }
+                        try (PreparedStatement updateFechaSalidaStmt = conn.prepareStatement(updateFechaSalidaQuery)) {
+                            updateFechaSalidaStmt.setDate(1, fechaActual);
+                            updateFechaSalidaStmt.setInt(2, idReserva);
+                            updateFechaSalidaStmt.executeUpdate();
+                        }
+                        System.out.println("Checkout completado con éxito.");
+                    } else {
+                        System.out.println("No se encontró la reserva con el ID proporcionado.");
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    
+    }
         public static void main(String[] args) throws Exception {
             try{
                 guardarCliente(3, "wasa", "wasa", 0, 0, 0);
